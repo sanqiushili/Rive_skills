@@ -1,0 +1,58 @@
+name: package-or-publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish all skills to npm"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Validate skill packages
+        run: bash tooling/validate-skill.sh
+
+      - name: Pack all skills
+        run: bash tooling/pack-all.sh
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-packages
+          path: dist/*.tgz
+          if-no-files-found: error
+
+      - name: Publish to npm
+        if: ${{ inputs.publish == 'true' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "NPM_TOKEN is required when publish=true"
+            exit 1
+          fi
+
+          for skill_dir in skills/*; do
+            if [ -f "$skill_dir/package.json" ]; then
+              echo "Publishing $skill_dir"
+              (cd "$skill_dir" && npm publish --access public)
+            fi
+          done

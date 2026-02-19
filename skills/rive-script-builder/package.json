@@ -1,0 +1,34 @@
+{
+  "name": "rive-script-builder-skill",
+  "version": "1.0.0",
+  "description": "Cross-agent skill for building and revising Rive Luau scripts.",
+  "author": "三秋十李 Sergio (RiveCN.com)",
+  "homepage": "https://RiveCN.com",
+  "license": "MIT",
+  "keywords": [
+    "skill",
+    "rive",
+    "luau",
+    "agent-skill",
+    "vercel-skills"
+  ],
+  "files": [
+    "SKILL.md",
+    "agents",
+    "references",
+    "scripts",
+    "assets",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
