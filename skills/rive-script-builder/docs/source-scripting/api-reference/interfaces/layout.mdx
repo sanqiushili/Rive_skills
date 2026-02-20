@@ -1,0 +1,29 @@
+---
+title: Layout
+---
+
+A scripted Layout which can function just like a [Node](/scripting/api-reference/interfaces/node) but
+also has the ability to fit into a layout box provided via
+resize. It can also be intrinsically sized allowing hosting
+layouts to attempt to fit to its size by using the measure
+function to report desired dimensions.
+
+See [Layout Scripts](/scripting/protocols/layout-scripts).
+
+
+## Methods
+
+### `measure`
+
+When provided this Layout can be intrinsically sized/request
+to be a specific size. This is not guaranteed as the layout
+may have min/max dimensions. Resize will be called with the
+granted size after being measured.
+
+
+### `resize`
+
+Guaranteed to be called to set initial size and also called
+whenever the size changes.
+
+

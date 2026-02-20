@@ -1,28 +1,29 @@
 # Rive Skills
 
-这个仓库用于发布 Rive 相关技能（Skills）。  
-当前只有一个技能：`rive-script-builder`。
+[简体中文](README.zh-CN.md)
 
-## 仓库结构
+This repository publishes reusable Rive-related skills.  
+Currently, it contains one skill: `rive-script-builder`.
+
+## Structure
 
 ```text
 .
 ├─ skills/
 │  └─ rive-script-builder/
 │     ├─ SKILL.md
-│     ├─ README.md
-│     ├─ package.json
 │     ├─ agents/openai.yaml
+│     ├─ docs/
 │     ├─ references/
 │     └─ scripts/
-└─ .github/workflows/   # CI / 发布工作流（可选）
+└─ .github/workflows/   # optional CI/release workflows
 ```
 
 ## rive-script-builder
 
-`rive-script-builder` 是一个跨 Agent 的 Rive Luau 脚本技能，采用“先澄清、后实现、需明确批准”的工作流。
+`rive-script-builder` is a cross-agent skill for building and revising Rive Luau scripts with a clarification-first, approval-required workflow.
 
-## 支持范围
+## Protocol Coverage
 
 - Node
 - Layout
@@ -33,40 +34,78 @@
 - Util
 - Test
 
-## 特性
+## Highlights
 
-- 明确批准前不输出最终脚本代码。
-- 优先使用离线参考资料，可选同步官方实时文档。
-- 提供编辑器挂载指引、调试清单和测试建议。
+- No final script output before explicit approval.
+- Context7 MCP lookup first (`/rive-app/rive-docs`).
+- Local docs/references fallback when MCP is unavailable.
+- Includes wiring guidance, debugging checklist, and test suggestions.
 
-## 安装
+## Recommended Prerequisite (Optional)
+
+Install and configure Context7 MCP in your AI client before using this skill.
+This is recommended, not required.
+
+- Local MCP server command:
+  ```bash
+  npx -y @upstash/context7-mcp --api-key YOUR_API_KEY
+  ```
+- Remote MCP endpoint:
+  ```text
+  https://mcp.context7.com/mcp
+  ```
+- Official setup guide: [Context7 Installation](https://context7.com/docs/installation)
+
+## Install
+
+Skills.sh-style install from your GitHub repository:
 
 ```bash
-npx skills add rive-script-builder-skill
+npx skills add https://github.com/sanqiushili/Rive_skills --skill rive-script-builder
 ```
 
-或者使用你的 Agent 运行时支持的 GitHub 目录安装方式。
+If your skill is indexed on Skills, you can also use:
 
-## 使用流程
+```bash
+npx skills add https://github.com/sanqiushili/Rive_skills@rive-script-builder
+```
 
-1. 在对话中触发：`Use rive-script-builder`
-2. 描述目标效果和协议上下文
-3. 查看技能给出的澄清问题和待实现计划
-4. 明确批准后，输出最终 Luau 代码与接线步骤
+Reference: [Skills CLI](https://skills.sh/docs/cli)
 
-## 示例请求
+## Usage
 
-- “帮我写一个蜡笔粗糙边缘的 Path Effect 脚本。”
-- “重构这个 Rive Converter，并补上 reverseConvert。”
-- “排查我的 Transition Condition 闪烁问题。”
+1. Trigger in chat: `Use rive-script-builder`
+2. Describe your target behavior and protocol context
+3. Review clarification questions and pending implementation plan
+4. Approve explicitly to receive final Luau code and wiring steps
 
+## MCP Lookup (Default)
 
-## 维护者
+By default, the skill queries Rive docs through Context7 MCP:
 
-- 作者：`三秋十李 Sergio`
-- 发布方：`RiveCN.com`
-- 网站：`https://RiveCN.com`
+```text
+resolve-library-id -> /rive-app/rive-docs
+query-docs(libraryId="/rive-app/rive-docs", query="<your API/protocol question>")
+```
 
-## 许可证
+If MCP is unavailable, the skill falls back to:
 
-`skills/rive-script-builder` 使用 MIT 许可证，见 `LICENSE`。
+```bash
+python3 skills/rive-script-builder/scripts/sync_rive_docs.py search --source auto --query "PathEffect"
+```
+
+## Example Requests
+
+- "Build a Path Effect script for rough crayon edges."
+- "Refactor this Rive Converter and add reverseConvert."
+- "Debug why my Transition Condition flickers."
+
+## Maintainer
+
+- Author: `三秋十李 Sergio`
+- Publisher: `RiveCN.com`
+- Website: `https://RiveCN.com`
+
+## License
+
+`skills/rive-script-builder` uses MIT license. See `LICENSE`.

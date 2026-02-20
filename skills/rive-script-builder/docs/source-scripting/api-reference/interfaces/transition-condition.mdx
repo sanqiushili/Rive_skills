@@ -1,0 +1,21 @@
+---
+title: TransitionCondition
+---
+
+A condition to evaluate for a transition between state machine states to be taken.
+For more information, see [Transition Condition Scripts])(/scripting/protocols/transition-condition-scripts).
+
+
+## Methods
+
+### `init`
+
+Called once when the transition condition is created or attached.
+
+
+### `evaluate`
+
+Called every frame while the transition is active.
+Returning false prevents a transition, true allows a transition.
+
+

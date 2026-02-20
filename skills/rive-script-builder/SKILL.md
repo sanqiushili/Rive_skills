@@ -2,10 +2,10 @@
 name: rive-script-builder
 description: Build and revise Rive Luau scripts across Node, Layout, Converter, Path Effect, Transition Condition, Listener Action, Util, and Test protocols. Use when the user asks to write or modify Rive scripts, choose protocols, wire script inputs or data binding, debug runtime behavior, or plan unit tests for script logic.
 metadata:
-  author: "三秋十李 Sergio"
+  author: "三秋十李Sergio"
   publisher: "RiveCN.com"
   website: "https://RiveCN.com"
-  short-description: "Rive scripting skill by 三秋十李 Sergio @ RiveCN.com"
+  short-description: "Rive scripting skill by 三秋十李Sergio @ RiveCN.com"
 ---
 
 # Rive Script Builder
@@ -13,8 +13,8 @@ metadata:
 Build Rive Luau scripts with a strict clarification-first workflow.
 
 Knowledge policy:
-- Prefer local skill references in this folder first (offline-safe mode).
-- When network is available, refresh from GitHub docs snapshot before coding.
+- Prefer Context7 MCP lookup first (library: `/rive-app/rive-docs`).
+- If Context7 is unavailable, fall back to `sync_rive_docs.py` online/cache/offline chain.
 - Never invent APIs, lifecycle methods, or editor menus.
 
 ## Non-Negotiable Contract
@@ -32,35 +32,58 @@ Knowledge policy:
 
 ## Workflow
 
-### Phase 0: Refresh Live Docs (Recommended)
+### Phase 0: Live Docs Lookup (Default)
 
-Try to refresh docs snapshot before implementation:
+Default lookup order:
+
+1. Context7 MCP (primary)
+2. `scripts/sync_rive_docs.py` (secondary fallback)
+
+Context7 MCP primary call:
+
+```text
+resolve-library-id -> /rive-app/rive-docs
+query-docs(libraryId="/rive-app/rive-docs", query="<target API/protocol question>")
+```
+
+Query templates:
+- `docs/context7-query-recipes.md`
+
+Fallback lookup commands:
+
+```bash
+python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" search --source auto --query "PathEffect"
+python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" show --source auto --path scripting/protocols/path-effect-scripts.mdx
+```
+
+Optional cache prewarm (recommended, not required):
 
 ```bash
 python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" sync
 ```
 
-Then query needed details:
+`auto` fallback chain:
+- `search`: online -> cache -> offline
+- `show`: online -> cache
 
-```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" search --query "PathEffect"
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" show --path scripting/protocols/path-effect-scripts.mdx
-```
-
-If sync fails, continue with offline references and state fallback explicitly.
-See `references/live-docs-workflow.md`.
+If fallback happens, keep the reason explicit in output.
+See `docs/live-docs-workflow.md`.
+Offline knowledge includes full upstream mirror at `docs/source-scripting/`.
 
 ### Phase 1: Scope and Route
 
-- Identify target protocol using `references/protocol-router.md`.
-- Use `references/api-signature-cheatsheet.md` to lock exact method signatures.
+- Identify target protocol using `docs/protocol-router.md`.
+- Use `docs/api-signature-cheatsheet.md` to lock exact method signatures.
+- If exact API details are ambiguous, check matching files in `docs/source-scripting/api-reference/`.
+- For data-driven scripts, align with `docs/data-binding-deep-dive.md` and `docs/script-inputs-deep-dive.md`.
 - If multiple protocols are needed, propose the smallest viable combination and explain why.
 - State assumptions explicitly.
 
 ### Phase 2: Clarify Uncertainty
 
 - Ask only questions that change implementation decisions.
-- Use `references/clarification-checklists.md`.
+- Use `docs/clarification-checklists.md`.
+- For interaction-heavy requests, use `docs/pointer-events-playbook.md` to narrow unresolved event-routing details.
 - Skip questions already answered by user context.
 
 ### Phase 3: Present Pending Plan
@@ -94,7 +117,9 @@ Always include:
 - Debug checklist (Problems and Console)
 - Test suggestions (especially Test scripts for Util logic)
 
-Use `references/editor-wiring-recipes.md` and `references/debug-test-playbook.md`.
+Use `docs/editor-wiring-recipes.md` and `docs/debug-test-playbook.md`.
+Use `docs/path-api-performance-notes.md` for path-heavy scripts.
+Use `docs/quality-gates.md` as final quality checklist.
 
 ## Protocol and API Guardrails
 
@@ -104,7 +129,7 @@ Use `references/editor-wiring-recipes.md` and `references/debug-test-playbook.md
 - For `PathEffect`, keep `update` deterministic; use `advance` only for time-based behavior.
 - Remember: scripts cannot set normal input values; use context or view model access for writable data.
 - Remove long-lived listeners when no longer needed to avoid leaks.
-- Check `references/common-errors-and-fixes.md` before final handoff.
+- Check `docs/common-errors-and-fixes.md` before final handoff.
 - If required details are missing, ask before coding.
 
 ## Output Format
@@ -123,14 +148,23 @@ After approval:
 - Debug plan
 - Test plan
 
-## Reference Map
+## Docs and References Map
 
-- Live docs sync and fallback rules: `references/live-docs-workflow.md`
-- Protocol routing and method contracts: `references/protocol-router.md`
-- Signature and API quick reference: `references/api-signature-cheatsheet.md`
-- Clarification questions by protocol: `references/clarification-checklists.md`
+- Live docs sync and fallback rules: `docs/live-docs-workflow.md`
+- Cross-platform publishing guidance: `docs/publish-cross-platform.md`
+- Protocol routing and method contracts: `docs/protocol-router.md`
+- Signature and API quick reference: `docs/api-signature-cheatsheet.md`
+- Clarification questions by protocol: `docs/clarification-checklists.md`
+- Data binding deep dive: `docs/data-binding-deep-dive.md`
+- Script inputs deep dive: `docs/script-inputs-deep-dive.md`
+- Pointer events playbook: `docs/pointer-events-playbook.md`
+- Path API and performance notes: `docs/path-api-performance-notes.md`
+- Final quality gates: `docs/quality-gates.md`
+- Context7 query templates: `docs/context7-query-recipes.md`
+- Full mirror index: `docs/source-scripting-index.md`
+- Full upstream mirror folder: `docs/source-scripting/`
+- Editor attach and binding steps: `docs/editor-wiring-recipes.md`
+- Debug and test workflow: `docs/debug-test-playbook.md`
+- Common errors and fixes: `docs/common-errors-and-fixes.md`
 - Minimal Luau templates: `references/scaffold-templates.md`
 - Practical case recipes: `references/case-recipes.md`
-- Editor attach and binding steps: `references/editor-wiring-recipes.md`
-- Debug and test workflow: `references/debug-test-playbook.md`
-- Common errors and fixes: `references/common-errors-and-fixes.md`
