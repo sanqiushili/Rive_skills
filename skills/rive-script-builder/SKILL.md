@@ -2,6 +2,7 @@
 name: rive-script-builder
 description: Build and revise Rive Luau scripts across Node, Layout, Converter, Path Effect, Transition Condition, Listener Action, Util, and Test protocols. Use when the user asks to write or modify Rive scripts, choose protocols, wire script inputs or data binding, debug runtime behavior, or plan unit tests for script logic.
 metadata:
+  version: "2.0.0"
   author: "三秋十李Sergio"
   publisher: "RiveCN.com"
   website: "https://RiveCN.com"

@@ -2,6 +2,10 @@
 
 [English](README.md)
 
+> 本 Skills 来自 [RiveCN](https://rivecn.com)。
+
+**当前版本：** `rive-script-builder v2.0.0`
+
 这个仓库用于发布可复用的 Rive 相关技能。  
 当前只有一个技能：`rive-script-builder`。
 
@@ -21,7 +25,7 @@
 
 ## rive-script-builder
 
-`rive-script-builder` 是一个跨 Agent 的 Rive Luau 脚本技能，采用“先澄清、后实现、需明确批准”的工作流。
+`rive-script-builder` 是一个跨 Agent 的 Rive Luau 脚本技能。只有在需求不明确或风险较高时，才采用先澄清再实现的流程。
 
 ## 协议覆盖
 
@@ -36,7 +40,8 @@
 
 ## 主要特性
 
-- 明确批准前不输出最终脚本代码。
+- 需求清楚时可直接输出代码。
+- 仅在需要澄清或做高风险决策时才给出待实现计划。
 - 默认优先通过 Context7 MCP 查询官方文档（`/rive-app/rive-docs`）。
 - MCP 不可用时，自动回退到本地 docs/references 与同步脚本链路。
 - 附带挂载指引、调试清单和测试建议。
@@ -75,8 +80,8 @@ npx skills add https://github.com/sanqiushili/Rive_skills@rive-script-builder
 
 1. 在对话中触发：`Use rive-script-builder`
 2. 描述目标效果和协议上下文
-3. 查看澄清问题和待实现计划
-4. 明确批准后，获得最终 Luau 代码与挂载步骤
+3. 如有需要，查看澄清问题和待实现计划
+4. 需求清楚时可直接获得最终 Luau 代码与挂载步骤
 
 ## MCP 查询（默认）
 
@@ -107,4 +112,4 @@ python3 skills/rive-script-builder/scripts/sync_rive_docs.py search --source aut
 
 ## 许可证
 
-`skills/rive-script-builder` 使用 MIT 许可证，见 `LICENSE`。
+`skills/rive-script-builder` 使用 CC BY 4.0 许可证，使用和改编时必须署名。见 `LICENSE`。

@@ -2,6 +2,10 @@
 
 [简体中文](README.zh-CN.md)
 
+> These skills come from [RiveCN](https://rivecn.com).
+
+**Current version:** `rive-script-builder v2.0.0`
+
 This repository publishes reusable Rive-related skills.  
 Currently, it contains one skill: `rive-script-builder`.
 
@@ -21,7 +25,7 @@ Currently, it contains one skill: `rive-script-builder`.
 
 ## rive-script-builder
 
-`rive-script-builder` is a cross-agent skill for building and revising Rive Luau scripts with a clarification-first, approval-required workflow.
+`rive-script-builder` is a cross-agent skill for building and revising Rive Luau scripts. It uses a clarification-first workflow only when the request is underspecified or risky.
 
 ## Protocol Coverage
 
@@ -36,7 +40,8 @@ Currently, it contains one skill: `rive-script-builder`.
 
 ## Highlights
 
-- No final script output before explicit approval.
+- Direct code output when the request is clear.
+- Pending plans only when the request needs clarification or higher-risk decisions.
 - Context7 MCP lookup first (`/rive-app/rive-docs`).
 - Local docs/references fallback when MCP is unavailable.
 - Includes wiring guidance, debugging checklist, and test suggestions.
@@ -76,8 +81,8 @@ Reference: [Skills CLI](https://skills.sh/docs/cli)
 
 1. Trigger in chat: `Use rive-script-builder`
 2. Describe your target behavior and protocol context
-3. Review clarification questions and pending implementation plan
-4. Approve explicitly to receive final Luau code and wiring steps
+3. Review clarification questions or a pending implementation plan if needed
+4. Receive Luau code and wiring steps directly when the request is clear
 
 ## MCP Lookup (Default)
 
@@ -108,4 +113,4 @@ python3 skills/rive-script-builder/scripts/sync_rive_docs.py search --source aut
 
 ## License
 
-`skills/rive-script-builder` uses MIT license. See `LICENSE`.
+`skills/rive-script-builder` is licensed under CC BY 4.0. Attribution is required. See `LICENSE`.
