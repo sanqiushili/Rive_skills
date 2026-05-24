@@ -10,7 +10,7 @@ Define inputs in two places:
 
 If value must be assigned at runtime in editor, use `late()`.
 
-```lua
+```luau
 type MyNode = {
   speed: Input<number>,
   noise: Input<number>,
@@ -61,7 +61,7 @@ Use ViewModel input when script must both read and write bound data:
 
 Then access nested properties directly:
 
-```lua
+```luau
 if self.character then
   self.character.x.value = 10
 end
@@ -88,4 +88,3 @@ Ask before coding:
 - Which inputs need defaults, and which must be assigned via `late()`?
 - Do we need one-way read binding or two-way ViewModel writes?
 - What is acceptable update frequency for input-driven recomputation?
-

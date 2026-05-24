@@ -33,6 +33,17 @@ Fix:
 2. Set default in return table (or `late()`).
 3. Select script instance (or converter object) to view inputs.
 
+## Error: Trigger input does not fire
+
+Cause candidates:
+- Factory default uses `late()` or `nil`.
+- Trigger work mutates heavy state directly inside the trigger callback.
+
+Fix:
+1. Set `Input<Trigger>` default to `function() end`.
+2. Override it in `init` if needed.
+3. Set a flag in the trigger callback and do heavier work in `advance` or `update`.
+
 ## Error: Data binding set but value does not update
 
 Cause candidates:
@@ -74,6 +85,18 @@ Fix:
 1. Ensure `pointerDown/Move/Up/Exit` are in returned table.
 2. Call `event:hit()` where capture is required.
 3. For nested instances, forward translated pointer events manually.
+
+## Error: Rive reports Luau syntax errors
+
+Cause candidates:
+- JavaScript/C syntax leaked into Luau (`!=`, `&&`, `||`, `!`).
+- ES module syntax was used (`import`, `export default`).
+- Roblox globals were assumed.
+
+Fix:
+1. Use `~=`, `and`, `or`, `not`.
+2. Use `require("UtilName")` for Util scripts.
+3. Avoid `game`, `workspace`, `Instance`, file I/O, and network APIs.
 
 ## Error: Converter reverse path behaves unexpectedly
 

@@ -6,11 +6,13 @@ Use these gates before shipping any script response.
 
 Before coding, verify:
 - protocol choice is explicit
-- unresolved decisions are asked as targeted questions
+- unresolved implementation-changing decisions are asked as targeted questions
 - assumptions are listed
-- user gave explicit approval to start coding
+- user gave explicit approval when the task required a pending plan
 
-If approval is missing, do not output final script code.
+If the user explicitly asked for implementation and protocol/data wiring are clear, direct code output is allowed.
+
+If approval is required but missing, do not output final script code.
 
 ## Gate 2: API Contract Safety
 
@@ -52,4 +54,3 @@ Before handoff, quickly check:
 - protocol lifecycle function table is complete
 - path/pointer edge cases are handled
 - code style is minimal and maintainable
-

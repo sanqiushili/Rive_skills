@@ -1,18 +1,18 @@
 # Scaffold Templates
 
-Use these minimal templates as the first draft. Extend only after approval.
+Use these minimal templates as the first draft. Extend only after approval when a pending plan is required.
 
 ## Node
 
-```lua
-type MyNode = {}
+```luau
+export type MyNode = {}
 
 local function init(self: MyNode, context: Context): boolean
   return true
 end
 
 local function advance(self: MyNode, seconds: number): boolean
-  return false
+  return true
 end
 
 local function draw(self: MyNode, renderer: Renderer)
@@ -29,18 +29,18 @@ end
 
 ## Layout
 
-```lua
-type MyLayout = {}
+```luau
+export type MyLayout = {}
 
 local function init(self: MyLayout, context: Context): boolean
   return true
 end
 
-local function measure(self: MyLayout): Vec2D
-  return Vec2D.xy(100, 100)
+local function measure(self: MyLayout): Vector
+  return Vector.xy(100, 100)
 end
 
-local function resize(self: MyLayout, size: Vec2D)
+local function resize(self: MyLayout, size: Vector)
 end
 
 local function draw(self: MyLayout, renderer: Renderer)
@@ -58,8 +58,8 @@ end
 
 ## Converter
 
-```lua
-type MyConverter = {}
+```luau
+export type MyConverter = {}
 
 local function init(self: MyConverter): boolean
   return true
@@ -67,13 +67,21 @@ end
 
 local function convert(self: MyConverter, input: DataInputs): DataOutput
   local out: DataValueNumber = DataValue.number()
-  out.value = 0
+  if input:isNumber() then
+    out.value = (input :: DataValueNumber).value
+  else
+    out.value = 0
+  end
   return out
 end
 
 local function reverseConvert(self: MyConverter, input: DataOutput): DataInputs
   local out: DataValueNumber = DataValue.number()
-  out.value = 0
+  if input:isNumber() then
+    out.value = (input :: DataValueNumber).value
+  else
+    out.value = 0
+  end
   return out
 end
 
@@ -88,8 +96,8 @@ end
 
 ## Path Effect
 
-```lua
-type MyPathEffect = {
+```luau
+export type MyPathEffect = {
   context: Context,
 }
 
@@ -119,8 +127,8 @@ end
 
 ## Transition Condition
 
-```lua
-type MyTransitionCondition = {
+```luau
+export type MyTransitionCondition = {
   context: Context,
 }
 
@@ -144,8 +152,8 @@ end
 
 ## Listener Action
 
-```lua
-type MyListenerAction = {
+```luau
+export type MyListenerAction = {
   context: Context,
 }
 
@@ -168,7 +176,7 @@ end
 
 ## Util
 
-```lua
+```luau
 export type MathPair = {
   sum: number,
   diff: number,
@@ -188,7 +196,7 @@ return {
 
 ## Test
 
-```lua
+```luau
 local MyUtil = require('MyUtil')
 
 function setup(test: Tester)
@@ -202,5 +210,9 @@ function setup(test: Tester)
       expect(value.diff).is(2)
     end)
   end)
+end
+
+return function(): Tests
+  return setup
 end
 ```

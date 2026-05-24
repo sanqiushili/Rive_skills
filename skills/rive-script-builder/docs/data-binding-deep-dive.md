@@ -31,7 +31,7 @@ Common property accessors:
 
 Example:
 
-```lua
+```luau
 type MyNode = {
   context: Context,
 }
@@ -74,7 +74,7 @@ If listener callbacks should refresh script state, call:
 
 Use `getViewModel` for nested structures:
 
-```lua
+```luau
 local vm = context:viewModel()
 if vm then
   local profile = vm:getViewModel("profile")
@@ -105,4 +105,3 @@ Ask these before implementation:
 - Which properties are read-only vs writable?
 - Do we need trigger firing or only value updates?
 - Where should listeners be attached, and when should they be removed?
-

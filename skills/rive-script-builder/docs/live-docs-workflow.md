@@ -31,21 +31,26 @@ query-docs(libraryId="/rive-app/rive-docs", query="Path Effect update and advanc
 Recommended invocation when MCP is unavailable:
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" <subcommand>
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py <subcommand>
 ```
+
+Resolve `scripts/sync_rive_docs.py` relative to the active `SKILL.md`; do not assume a fixed global skill directory.
 
 ## Fallback Lookup (No Token Required)
 
 Search:
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" search --source auto --query "Path Effect"
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py search --source auto --query "Path Effect"
 ```
 
 Show file:
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" show --source auto --path scripting/protocols/path-effect-scripts.mdx
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py show --source auto --path scripting/protocols/path-effect-scripts.mdx
 ```
 
 Source behavior:
@@ -74,15 +79,17 @@ It fetches `docs.json` from the target branch as the online index, then reads ma
 `sync` is optional. Use it to reduce repeated remote requests and improve offline continuity:
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" sync
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py sync
 ```
 
 Other cache commands:
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" status
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" search --source cache --query "PathEffect"
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" show --source cache --path scripting/protocols/path-effect-scripts.mdx
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py status
+python3 scripts/sync_rive_docs.py search --source cache --query "PathEffect"
+python3 scripts/sync_rive_docs.py show --source cache --path scripting/protocols/path-effect-scripts.mdx
 ```
 
 ## Default Remote Source (Fallback Path)

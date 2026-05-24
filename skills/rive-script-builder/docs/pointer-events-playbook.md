@@ -26,9 +26,9 @@ From API reference:
 
 Track active pointers by `event.id`:
 
-```lua
+```luau
 type MyNode = {
-  activePointers: {[number]: Vec2D},
+  activePointers: {[number]: Vector},
 }
 
 local function pointerDown(self: MyNode, event: PointerEvent)
@@ -73,4 +73,3 @@ Clarify these choices:
 - Verify `event:hit()` is used only where intended.
 - Confirm pointer IDs are removed on release/exit.
 - In nested forwarding, verify coordinate transform before dispatch.
-

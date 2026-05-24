@@ -113,3 +113,178 @@ After coding:
 - Give editor wiring steps.
 - Give debugging checkpoints.
 - Give parameter presets for quick validation.
+
+## Known-Good Compact Examples
+
+Use these as shape references when a user request is close. Rename the script/type to match the user's feature.
+
+### Input-Driven Progress Bar
+
+Protocol:
+- `Node`
+
+Pattern:
+- Build paths in `update`, not `draw`.
+- Read primitive inputs directly.
+- Use `late()` for `Path` and `Paint`.
+
+```luau
+export type ProgressBar = {
+  width: Input<number>,
+  height: Input<number>,
+  current: Input<number>,
+  maximum: Input<number>,
+  bgPath: Path,
+  fillPath: Path,
+  bgPaint: Paint,
+  fillPaint: Paint,
+}
+
+local function rebuild(self: ProgressBar)
+  local maxValue = math.max(0.0001, self.maximum)
+  local t = math.max(0, math.min(1, self.current / maxValue))
+  local fillWidth = self.width * t
+
+  self.bgPath:reset()
+  self.bgPath:moveTo(Vector.xy(0, 0))
+  self.bgPath:lineTo(Vector.xy(self.width, 0))
+  self.bgPath:lineTo(Vector.xy(self.width, self.height))
+  self.bgPath:lineTo(Vector.xy(0, self.height))
+  self.bgPath:close()
+
+  self.fillPath:reset()
+  self.fillPath:moveTo(Vector.xy(0, 0))
+  self.fillPath:lineTo(Vector.xy(fillWidth, 0))
+  self.fillPath:lineTo(Vector.xy(fillWidth, self.height))
+  self.fillPath:lineTo(Vector.xy(0, self.height))
+  self.fillPath:close()
+end
+
+local function init(self: ProgressBar, context: Context): boolean
+  self.bgPath = Path.new()
+  self.fillPath = Path.new()
+  self.bgPaint = Paint.with({ style = "fill", color = Color.rgb(50, 50, 56) })
+  self.fillPaint = Paint.with({ style = "fill", color = Color.rgb(80, 200, 140) })
+  rebuild(self)
+  return true
+end
+
+local function update(self: ProgressBar)
+  rebuild(self)
+end
+
+local function draw(self: ProgressBar, renderer: Renderer)
+  renderer:drawPath(self.bgPath, self.bgPaint)
+  renderer:drawPath(self.fillPath, self.fillPaint)
+end
+
+return function(): Node<ProgressBar>
+  return {
+    init = init,
+    update = update,
+    draw = draw,
+    width = 200,
+    height = 20,
+    current = 35,
+    maximum = 100,
+    bgPath = late(),
+    fillPath = late(),
+    bgPaint = late(),
+    fillPaint = late(),
+  }
+end
+```
+
+### Percent Text Converter
+
+Protocol:
+- `Converter`
+
+Pattern:
+- Check type before casting.
+- Implement `reverseConvert` only when two-way binding is needed.
+
+```luau
+export type PercentText = {}
+
+local function convert(self: PercentText, input: DataInputs): DataOutput
+  local out: DataValueString = DataValue.string()
+  if input:isNumber() then
+    out.value = `{math.floor((input :: DataValueNumber).value)}%`
+  else
+    out.value = ""
+  end
+  return out
+end
+
+local function reverseConvert(self: PercentText, input: DataOutput): DataInputs
+  local out: DataValueNumber = DataValue.number()
+  if input:isString() then
+    local raw = (input :: DataValueString).value:gsub("%%", "")
+    out.value = tonumber(raw) or 0
+  else
+    out.value = 0
+  end
+  return out
+end
+
+return function(): Converter<PercentText, DataValueNumber, DataValueString>
+  return {
+    convert = convert,
+    reverseConvert = reverseConvert,
+  }
+end
+```
+
+### Pointer Toggle Node
+
+Protocol:
+- `Node`
+
+Pattern:
+- Register pointer handlers in the factory table.
+- Call `event:hit()` when this script should consume the event.
+- Keep drawing separate from pointer state mutation.
+
+```luau
+export type PointerToggle = {
+  path: Path,
+  offPaint: Paint,
+  onPaint: Paint,
+  active: boolean,
+}
+
+local function init(self: PointerToggle, context: Context): boolean
+  self.path = Path.new()
+  self.path:moveTo(Vector.xy(-50, -25))
+  self.path:lineTo(Vector.xy(50, -25))
+  self.path:lineTo(Vector.xy(50, 25))
+  self.path:lineTo(Vector.xy(-50, 25))
+  self.path:close()
+  self.offPaint = Paint.with({ style = "fill", color = Color.rgb(90, 96, 110) })
+  self.onPaint = Paint.with({ style = "fill", color = Color.rgb(80, 180, 255) })
+  self.active = false
+  return true
+end
+
+local function pointerDown(self: PointerToggle, event: PointerEvent)
+  self.active = not self.active
+  event:hit()
+end
+
+local function draw(self: PointerToggle, renderer: Renderer)
+  renderer:drawPath(self.path, self.active and self.onPaint or self.offPaint)
+end
+
+return function(): Node<PointerToggle>
+  return {
+    init = init,
+    draw = draw,
+    pointerDown = pointerDown,
+    path = late(),
+    offPaint = late(),
+    onPaint = late(),
+    active = false,
+  }
+end
+```

@@ -1,4 +1,4 @@
 interface:
   display_name: "Rive Script Builder · 三秋十李Sergio"
   short_description: "RiveCN.com official scripting skill"
-  default_prompt: "Use $rive-script-builder to clarify requirements first, then generate a Rive Luau script only after explicit approval."
+  default_prompt: "Use $rive-script-builder to choose the right Rive protocol, clarify only implementation-changing uncertainty, and generate the script directly when the request is clear; otherwise present a pending plan and wait for approval."

@@ -10,31 +10,53 @@ metadata:
 
 # Rive Script Builder
 
-Build Rive Luau scripts with a strict clarification-first workflow.
+Build accurate, runnable Rive Luau scripts. Optimize for correct protocol choice,
+valid Luau signatures, editor wiring, and minimal user back-and-forth.
 
 Knowledge policy:
-- Prefer Context7 MCP lookup first (library: `/rive-app/rive-docs`).
+- Use embedded essentials in this file and local references for common protocol work.
+- Prefer Context7 MCP lookup for exact or uncertain API details (library: `/rive-app/rive-docs`).
 - If Context7 is unavailable, fall back to `sync_rive_docs.py` online/cache/offline chain.
 - Never invent APIs, lifecycle methods, or editor menus.
+
+## Fast Operating Mode
+
+- If the user explicitly asks to write/fix/review code and the protocol is clear, proceed directly with a small implementation.
+- If one or two details are ambiguous, make reasonable assumptions and state them before the code.
+- Ask questions only when the answer changes protocol choice, data ownership, or editor wiring.
+- Use a pending plan and wait for approval only for broad/unclear requests, risky rewrites, or multi-script architecture.
+
+## Critical Rive Runtime Context
+
+- Rive scripts run in Rive's sandboxed Luau VM, not Roblox, browser JavaScript, or normal Lua.
+- Do not use file I/O, network, `os.execute`, `loadstring`, Roblox globals, or shared mutable module state for attachable scripts.
+- Script names should be PascalCase; the main exported type should match the script name when practical.
+- Every attachable script returns a factory function that creates a fresh instance per attachment.
+- Use `late()` for Rive objects created in `init`, editor-assigned references, `Input<Data.X>`, and other values initialized later.
+- `Input<Trigger>` defaults to `function() end`, not `late()` or `nil`.
+- Primitive `Input<T>` values are read directly, for example `self.speed`, not `self.speed.value`.
+- Normal script inputs are effectively read-only from scripts. Runtime writes should go through ViewModel data.
+- `Color` is immutable; channel helpers return new colors.
+- Keep callbacks bounded and deterministic. Long synchronous loops can be killed by the runtime.
 
 ## Non-Negotiable Contract
 
 1. Parse user goal and recommend protocol(s) first.
 2. Ask only high-impact unresolved questions.
-3. Provide a "pending implementation plan" before writing code.
-4. Wait for explicit approval (for example: "同意", "开始写", "approved", "go ahead").
-5. After approval, output:
+3. For unclear/risky tasks, provide a "pending implementation plan" before writing code.
+4. Wait for explicit approval only when the task needs that pending plan.
+5. For approved or already-clear implementation requests, output:
 - Luau script code
 - Rive editor wiring steps
 - Debug and test suggestions
 6. Follow the user's language automatically.
-7. If approval is missing, do not output final script code.
+7. If approval is required but missing, do not output final script code.
 
 ## Workflow
 
-### Phase 0: Live Docs Lookup (Default)
+### Phase 0: Live Docs Lookup (When Needed)
 
-Default lookup order:
+Lookup order when exact API confirmation is needed:
 
 1. Context7 MCP (primary)
 2. `scripts/sync_rive_docs.py` (secondary fallback)
@@ -52,15 +74,19 @@ Query templates:
 Fallback lookup commands:
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" search --source auto --query "PathEffect"
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" show --source auto --path scripting/protocols/path-effect-scripts.mdx
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py search --source auto --query "PathEffect"
+python3 scripts/sync_rive_docs.py show --source auto --path scripting/protocols/path-effect-scripts.mdx
 ```
 
 Optional cache prewarm (recommended, not required):
 
 ```bash
-python3 "$CODEX_HOME/skills/rive-script-builder/scripts/sync_rive_docs.py" sync
+cd /path/to/rive-script-builder
+python3 scripts/sync_rive_docs.py sync
 ```
+
+Resolve `scripts/sync_rive_docs.py` relative to this `SKILL.md`; do not assume a fixed global skill directory.
 
 `auto` fallback chain:
 - `search`: online -> cache -> offline
@@ -88,6 +114,8 @@ Offline knowledge includes full upstream mirror at `docs/source-scripting/`.
 
 ### Phase 3: Present Pending Plan
 
+Use this phase only when the request is broad, underspecified, or likely to require multiple scripts.
+
 Present this structure before coding:
 
 - Goal understanding
@@ -100,9 +128,9 @@ Present this structure before coding:
 
 If user does not approve, keep refining plan only.
 
-### Phase 4: Implement After Approval
+### Phase 4: Implement
 
-- Generate minimal, runnable, typed Luau script first.
+- Generate minimal, runnable, typed Luau script first when the request is clear or approved.
 - Extend with requested behavior only.
 - Reuse templates from `references/scaffold-templates.md`.
 - For common tasks, start from `references/case-recipes.md` and adapt.
@@ -124,24 +152,31 @@ Use `docs/quality-gates.md` as final quality checklist.
 ## Protocol and API Guardrails
 
 - Never invent lifecycle functions, interfaces, or editor paths.
+- Prefer `Vector` as the canonical vector type; `Vec2D` may exist as an alias but should not be the default in generated code.
+- `Node.update(self)` is for input-change recomputation. `PathEffect.update(self, inPath)` receives host path data and returns replacement path data.
+- Luau uses `~=`, `and`, `or`, `not`; do not output JavaScript/C syntax such as `!=`, `&&`, `||`, or `!`.
+- Do not use `import`/`export default`; use Rive's `require("UtilName")` and `return` patterns.
+- Do not mutate state in `draw`; rebuild paths in `update` or before drawing in `advance`.
+- Do not mutate or `reset()` a `Path` again in the same frame after drawing it.
 - Keep `TransitionCondition.evaluate` fast and side-effect free.
 - Use `ListenerAction.perform` for side effects.
 - For `PathEffect`, keep `update` deterministic; use `advance` only for time-based behavior.
 - Remember: scripts cannot set normal input values; use context or view model access for writable data.
+- Bind strings to Text Runs, not parent Text objects.
 - Remove long-lived listeners when no longer needed to avoid leaks.
 - Check `docs/common-errors-and-fixes.md` before final handoff.
 - If required details are missing, ask before coding.
 
 ## Output Format
 
-Before approval:
+When approval is needed:
 
 - Understanding
 - Open questions
 - Pending plan
 - Confirmation prompt
 
-After approval:
+For direct implementation, or after approval:
 
 - Script code
 - Wiring steps

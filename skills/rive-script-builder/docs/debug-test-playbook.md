@@ -89,7 +89,7 @@ A script handoff is ready when:
 ## Scenario Checks for This Skill
 
 1. Ambiguous request should trigger clarification first.
-2. Without explicit approval, provide plan only.
-3. With explicit approval, provide code plus wiring and tests.
+2. Clear implementation request should provide code plus wiring and tests directly.
+3. Broad or risky request should provide a pending plan until explicit approval.
 4. Protocol routing should match Node/Layout/Converter/Path Effect/Transition/Listener/Util/Test requirements.
 5. Response language should follow user input language.
