@@ -1,5 +1,7 @@
 # Rive Skills
 
+[![Install with Skills](https://skills.sh/b/sanqiushili/Rive_skills)](https://skills.sh/sanqiushili/Rive_skills)
+
 [简体中文](README.zh-CN.md)
 
 > These skills come from [RiveCN](https://rivecn.com).
